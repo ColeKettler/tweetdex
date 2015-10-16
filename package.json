@@ -1,0 +1,22 @@
+{
+  "name": "tweetdex",
+  "version": "0.0.0",
+  "description": "An interactive Pokédex bot that lives in Twitter",
+  "author": {
+    "name": "Cole Kettler",
+    "email": "me@colekettler.com",
+    "url": "https://github.com/ColeKettler"
+  },
+  "homepage": "https://github.com/ColeKettler/tweetdex#readme",
+  "repository": "ColeKettler/tweetdex",
+  "bugs": {
+    "url": "https://github.com/ColeKettler/tweetdex/issues"
+  },
+  "license": "MIT",
+  "main": "bot.js",
+  "keywords": [
+    "pokemon",
+    "pokedex",
+    "twitter"
+  ]
+}
