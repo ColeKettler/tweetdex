@@ -6,3 +6,9 @@ var client = new Twit({
   access_token: process.env.TWEETDEX_TWITTER_OAUTH_TOKEN,
   access_token_secret: process.env.TWEETDEX_TWITTER_OAUTH_SECRET,
 });
+
+var stream = client.stream('user', { with: 'user' });
+
+stream.on('tweet', function(tweet) {
+
+});
