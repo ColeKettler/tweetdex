@@ -18,5 +18,8 @@
     "pokemon",
     "pokedex",
     "twitter"
-  ]
+  ],
+  "dependencies": {
+    "twit": "^2.1.0"
+  }
 }
