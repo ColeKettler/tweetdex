@@ -10,5 +10,31 @@ var client = new Twit({
 var stream = client.stream('user', { with: 'user' });
 
 stream.on('tweet', function(tweet) {
+  var pokemon = getPokemonName(tweet.text);
+  var entry = getPokedexEntry(pokemon);
 
+  client.post(
+    'statuses/update',
+    { status: entry, in_reply_to_status_id: tweet.id },
+    function(err, data, res) {
+
+    }
+  );
 });
+
+// Extract a Pokemon name to look up from the body of a tweet.
+function getPokemonName(text) {
+  return 'relicanth';
+}
+
+// Retrieve the national Pokedex list from Pokeapi.
+function getPokedexList() {
+  return [
+    { name: 'relicanth', resource_uri: 'api/v1/pokemon/369/' }
+  ];
+}
+
+// Look up a Pokemon on Pokeapi and return a random Pokedex entry.
+function getPokedexEntry(pokemon) {
+  return 'It has remained unchanged for 100 million years. It was discovered during a deep-sea exploration.';
+}
