@@ -10,22 +10,29 @@ var client = new Twit({
 var stream = client.stream('user', { with: 'user' });
 
 stream.on('tweet', function(tweet) {
+  var user = tweet.user['screen_name'];
   // Don't talk to yourself, silly robot
-  if (tweet.user['screen_name'] === 'tweetdexbot') {
+  if (user === 'tweetdexbot') {
     return;
   }
 
   var pokemon = getPokemonName(tweet.text);
   var entry = getPokedexEntry(pokemon);
+  var status = composeReply(user, entry);
 
   client.post(
     'statuses/update',
-    { status: entry, in_reply_to_status_id: tweet.id },
+    { status: status, in_reply_to_status_id: tweet.id },
     function(err, data, res) {
 
     }
   );
 });
+
+// Compose a reply to a given user.
+function composeReply(user, text) {
+  return '@' + user + ' ' + text;
+}
 
 // Extract a Pokemon name to look up from the body of a tweet.
 function getPokemonName(text) {
