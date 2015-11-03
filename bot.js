@@ -10,6 +10,11 @@ var client = new Twit({
 var stream = client.stream('user', { with: 'user' });
 
 stream.on('tweet', function(tweet) {
+  // Don't talk to yourself, silly robot
+  if (tweet.user['screen_name'] === 'tweetdexbot') {
+    return;
+  }
+
   var pokemon = getPokemonName(tweet.text);
   var entry = getPokedexEntry(pokemon);
 
