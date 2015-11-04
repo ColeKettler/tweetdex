@@ -20,6 +20,7 @@
     "twitter"
   ],
   "dependencies": {
+    "pkmn": "^1.0.7",
     "twit": "^2.1.0"
   }
 }

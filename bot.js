@@ -1,4 +1,5 @@
 var Twit = require('twit');
+var api = require('./api');
 
 var client = new Twit({
   consumer_key: process.env.TWEETDEX_TWITTER_API_KEY,
@@ -17,7 +18,7 @@ stream.on('tweet', function(tweet) {
   }
 
   var pokemon = getPokemonName(tweet.text);
-  var entry = getPokedexEntry(pokemon);
+  var entry = api.getPokedexEntry(pokemon);
   var status = composeReply(user, entry);
 
   client.post(
@@ -37,16 +38,4 @@ function composeReply(user, text) {
 // Extract a Pokemon name to look up from the body of a tweet.
 function getPokemonName(text) {
   return 'relicanth';
-}
-
-// Retrieve the national Pokedex list from Pokeapi.
-function getPokedexList() {
-  return [
-    { name: 'relicanth', resource_uri: 'api/v1/pokemon/369/' }
-  ];
-}
-
-// Look up a Pokemon on Pokeapi and return a random Pokedex entry.
-function getPokedexEntry(pokemon) {
-  return 'It has remained unchanged for 100 million years. It was discovered during a deep-sea exploration.';
 }
