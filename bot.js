@@ -1,12 +1,13 @@
+var Promise = require('bluebird');
 var Twit = require('twit');
 var api = require('./api');
 
-var client = new Twit({
+var client = Promise.promisifyAll(new Twit({
   consumer_key: process.env.TWEETDEX_TWITTER_API_KEY,
   consumer_secret: process.env.TWEETDEX_TWITTER_API_SECRET,
   access_token: process.env.TWEETDEX_TWITTER_OAUTH_TOKEN,
   access_token_secret: process.env.TWEETDEX_TWITTER_OAUTH_SECRET,
-});
+}));
 
 var stream = client.stream('user', { with: 'user' });
 
@@ -18,21 +19,19 @@ stream.on('tweet', function(tweet) {
   }
 
   var pokemon = getPokemonName(tweet.text);
-  var entry = api.getPokedexEntry(pokemon);
-  var status = composeReply(user, entry);
-
-  client.post(
-    'statuses/update',
-    { status: status, in_reply_to_status_id: tweet.id },
-    function(err, data, res) {
-
-    }
-  );
+  api.getPokedexEntry(pokemon)
+    .then(function(entry) {
+      return replyToTweet(tweet.id, user, entry);
+    });
 });
 
-// Compose a reply to a given user.
-function composeReply(user, text) {
-  return '@' + user + ' ' + text;
+// Compose and post a reply to a given user.
+function replyToTweet(tweetId, user, msg) {
+  var status = '@' + user + ' ' + msg;
+  return client.postAsync(
+    'statuses/update',
+    { status: status, in_reply_to_status_id: tweetId }
+  );
 }
 
 // Extract a Pokemon name to look up from the body of a tweet.
