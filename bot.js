@@ -16,7 +16,7 @@ stream.on('tweet', function(tweet) {
       return pokeapi.getPokedexEntry(pokemon);
     })
     .then(function(entry) {
-      return twitter.reply(tweet.id, user, entry);
+      return twitter.reply(tweet.id_str, entry, user);
     });
 });
 

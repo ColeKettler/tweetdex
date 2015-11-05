@@ -12,7 +12,16 @@ function getRandomInt(min, max) {
   return Math.floor(Math.random() * (max - min)) + min;
 }
 
+function truncateAtWord(str, max) {
+  var trunc = str.slice(0, max);
+  if (trunc.length < str.length) {
+    trunc = trunc.slice(0, trunc.lastIndexOf(' '));
+  }
+  return trunc;
+}
+
 module.exports = {
   fixPokemonSpelling: fixPokemonSpelling,
   getRandomInt: getRandomInt,
+  truncateAtWord: truncateAtWord,
 }
