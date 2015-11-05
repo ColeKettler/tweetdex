@@ -1,3 +1,4 @@
+var _ = require('lodash');
 var Promise = require('bluebird');
 var Twit = require('twit');
 var api = require('./api');
@@ -18,8 +19,10 @@ stream.on('tweet', function(tweet) {
     return;
   }
 
-  var pokemon = getPokemonName(tweet.text);
-  api.getPokedexEntry(pokemon)
+  extractPokemonName(tweet.text)
+    .then(function(pokemon) {
+      return api.getPokedexEntry(pokemon);
+    })
     .then(function(entry) {
       return replyToTweet(tweet.id, user, entry);
     });
@@ -35,6 +38,19 @@ function replyToTweet(tweetId, user, msg) {
 }
 
 // Extract a Pokemon name to look up from the body of a tweet.
-function getPokemonName(text) {
-  return 'relicanth';
+function extractPokemonName(text) {
+  return api.getPokemonList()
+    .then(function(list) {
+      var pokemon = _(text.split(' '))
+        .reject(function(word) {
+          return _.startsWith(word, '@');
+        })
+        .map(function(word) {
+          return word.toLowerCase();
+        })
+        .find(function(word) {
+          return _.some(list, { 'name': word });
+        });
+      return pokemon;
+    });
 }

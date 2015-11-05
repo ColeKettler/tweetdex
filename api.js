@@ -4,6 +4,14 @@ var getRandomInt = require('./utils').getRandomInt;
 
 var pkmn = new Pkmn();
 
+// Retrieve a list of all Pokemon from the National Dex.
+function getPokemonList() {
+  return pkmn.get('pokedex')
+    .then(function(pokedex) {
+      return pokedex.pokemon;
+    });
+}
+
 // Look up a Pokemon on Pokeapi and return a random Pokedex entry.
 function getPokedexEntry(name) {
   var descriptionLoading = pkmn.get('pokemon', name)
@@ -35,4 +43,5 @@ function getDescriptionId(uri) {
 
 module.exports = {
   getPokedexEntry: getPokedexEntry,
+  getPokemonList: getPokemonList,
 };
