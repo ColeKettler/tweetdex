@@ -24,5 +24,12 @@
     "lodash": "^3.10.1",
     "pkmn": "^1.0.7",
     "twit": "^2.1.0"
+  },
+  "devDependencies": {
+    "gulp": "^3.9.0",
+    "gulp-cached": "^1.1.0",
+    "gulp-jshint": "^1.12.0",
+    "gulp-nodemon": "^2.0.4",
+    "jshint-stylish": "^2.0.1"
   }
 }
