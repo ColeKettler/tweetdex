@@ -1,3 +1,5 @@
+'use strict';
+
 var _ = require('lodash');
 var pokeapi = require('./pokeapi');
 var twitter = require('./twitter');
@@ -5,7 +7,7 @@ var twitter = require('./twitter');
 var stream = twitter.client.stream('user', { with: 'user' });
 
 stream.on('tweet', function(tweet) {
-  var user = tweet.user['screen_name'];
+  var user = tweet.user.screen_name;
   // Don't talk to yourself, silly robot
   if (user === 'tweetdexbot') {
     return;

@@ -1,3 +1,5 @@
+'use strict';
+
 var gulp = require('gulp');
 var cache = require('gulp-cached');
 var jshint = require('gulp-jshint');

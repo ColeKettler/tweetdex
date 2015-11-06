@@ -1,3 +1,5 @@
+'use strict';
+
 var _ = require('lodash');
 var Promise = require('bluebird');
 var Twit = require('twit');
@@ -17,13 +19,13 @@ function reply(tweetId, msg, user) {
 
   Promise.each(statuses, function(status) {
     // Reply to last tweet in sequence to link tweets.
-    return postReply(replyToId, status, user).then(function(tweet) {
+    return postReply(replyToId, status).then(function(tweet) {
       replyToId = tweet.id_str;
     });
   });
 }
 
-function postReply(tweetId, status, user) {
+function postReply(tweetId, status) {
   return client.postAsync(
     'statuses/update',
     { status: status, in_reply_to_status_id: tweetId }

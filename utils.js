@@ -1,3 +1,5 @@
+'use strict';
+
 // Due to some issue with Pokeapi, the "é" in "Pokémon" gets dropped.
 // This is a quick hack to fix it until the issue is resolved.
 function fixPokemonSpelling(text) {
@@ -24,4 +26,4 @@ module.exports = {
   fixPokemonSpelling: fixPokemonSpelling,
   getRandomInt: getRandomInt,
   truncateAtWord: truncateAtWord,
-}
+};

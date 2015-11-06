@@ -1,3 +1,5 @@
+'use strict';
+
 var Pkmn = require('pkmn');
 var fixPokemonSpelling = require('./utils').fixPokemonSpelling;
 var getRandomInt = require('./utils').getRandomInt;
