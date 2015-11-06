@@ -5,7 +5,7 @@ var cache = require('gulp-cached');
 var jshint = require('gulp-jshint');
 var nodemon = require('gulp-nodemon');
 
-var jsFiles = './*.js';
+var jsFiles = ['*.js', 'src/*.js'];
 
 gulp.task('default', ['watch', 'lint', 'start']);
 
@@ -18,7 +18,7 @@ gulp.task('lint', function() {
 
 gulp.task('start', function() {
   return nodemon({
-    script: 'bot.js',
+    script: 'src/bot.js',
     ext: 'js',
     ignore: ['gulpfile.js'],
     env: {
