@@ -26,7 +26,8 @@ stream.on('tweet', function(tweet) {
 function extractPokemon(text) {
   return pokeapi.getPokemonList()
     .then(function(list) {
-      var pokemon = _(text.split(' '))
+      var words = text.match(/(@?\b\S+\b)/g);
+      var pokemon = _(words)
         .reject(function(word) {
           return _.startsWith(word, '@');
         })
