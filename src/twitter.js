@@ -3,6 +3,7 @@
 var _ = require('lodash');
 var Promise = require('bluebird');
 var Twit = require('twit');
+var logger = require('./logger');
 var utils = require('./utils');
 
 var client = Promise.promisifyAll(new Twit({
@@ -18,10 +19,15 @@ function reply(tweetId, msg, user) {
   var replyToId = tweetId;
 
   Promise.each(statuses, function(status) {
-    // Reply to last tweet in sequence to link tweets.
-    return postReply(replyToId, status).then(function(tweet) {
-      replyToId = tweet.id_str;
-    });
+    var posting = utils.retry(postReply.bind(null, replyToId, status), 2);
+    return posting
+      .then(function(tweet) {
+        replyToId = tweet.id_str;
+      })
+      .error(function(err) {
+        var errInfo = _.pick(err, ['code', 'statusCode', 'message']);
+        logger.error('Tweet failed to send', { error: errInfo });
+      });
   });
 }
 

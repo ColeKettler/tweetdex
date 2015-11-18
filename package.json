@@ -23,7 +23,8 @@
     "bluebird": "^3.0.5",
     "lodash": "^3.10.1",
     "pkmn": "^1.0.7",
-    "twit": "^2.1.0"
+    "twit": "^2.1.0",
+    "winston": "^2.1.1"
   },
   "devDependencies": {
     "gulp": "^3.9.0",

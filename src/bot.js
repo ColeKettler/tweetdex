@@ -3,6 +3,7 @@
 var _ = require('lodash');
 var pokeapi = require('./pokeapi');
 var twitter = require('./twitter');
+var PokemonNotFoundError = require('./errors').PokemonNotFoundError;
 
 var stream = twitter.client.stream('user', { with: 'user' });
 
@@ -15,10 +16,14 @@ stream.on('tweet', function(tweet) {
 
   extractPokemon(tweet.text)
     .then(function(pokemon) {
-      return pokeapi.getPokedexEntry(pokemon);
+      return pokeapi.getPokedexEntry(pokemon)
+        .then(function(entry) {
+          return twitter.reply(tweet.id_str, entry, user);
+        });
     })
-    .then(function(entry) {
-      return twitter.reply(tweet.id_str, entry, user);
+    .catch(PokemonNotFoundError, function() {
+      var status = 'Sorry, I could not find a Pokémon in your request.';
+      return twitter.reply(tweet.id_str, status, user);
     });
 });
 
@@ -37,6 +42,10 @@ function extractPokemon(text) {
         .find(function(word) {
           return _.some(list, { 'name': word });
         });
+
+      if (_.isUndefined(pokemon)) {
+        throw new PokemonNotFoundError('No Pokémon found in text body.');
+      }
       return pokemon;
     });
 }
