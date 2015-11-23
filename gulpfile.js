@@ -1,5 +1,6 @@
 'use strict';
 
+var _ = require('lodash');
 var gulp = require('gulp');
 var cache = require('gulp-cached');
 var jshint = require('gulp-jshint');
@@ -16,15 +17,23 @@ gulp.task('lint', function() {
     .pipe(jshint.reporter('jshint-stylish'));
 });
 
-gulp.task('start', function() {
-  return nodemon({
+// Default Nodemon options
+var nodemonOpts = {
     script: 'src/bot.js',
     ext: 'js',
     ignore: ['gulpfile.js'],
     env: {
       'NODE_ENV': 'development'
     },
-  });
+};
+
+gulp.task('start', function() {
+  return nodemon(nodemonOpts);
+});
+
+gulp.task('debug', function() {
+  var opts = { exec: 'node-inspector & node --debug' };
+  return nodemon(_.assign(opts, nodemonOpts));
 });
 
 gulp.task('watch', function() {
