@@ -1,0 +1,5 @@
+---
+
+# DigitalOcean sets this to the droplet name anyway
+hostname: "{{ ansible_hostname }}"
+fqdn: "{{ hostname }}"

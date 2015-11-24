@@ -1,0 +1,78 @@
+---
+
+- name: decrypt secrets
+  include_vars: vault.yml
+  no_log: true
+
+- name: create app directories
+  file:
+    path: "{{ item.path }}"
+    owner: deploy
+    group: "{{ app_user }}"
+    mode: "{{ item.mode }}"
+    state: directory
+  become: yes
+  with_items:
+    - { path: "{{ app_directory }}", mode: "06755" }
+    - { path: "{{ app_log_directory }}", mode: "06775" }
+
+- name: pull latest source from github
+  git:
+    repo: "{{ github_repo }}"
+    dest: "{{ app_directory }}"
+    accept_hostkey: yes
+    update: yes
+
+- name: install npm dependencies
+  npm:
+    path: "{{ app_directory }}"
+    production: yes
+    state: present
+
+# This whole directory is sensitive - keep it locked down to 0700 and use ACLs!
+- name: create pm2 home directory
+  file:
+    path: "{{ app_user_home }}/.pm2"
+    owner: "{{ app_user }}"
+    group: "{{ app_user }}"
+    mode: 0700
+    state: directory
+  become: yes
+
+- name: restrict pm2 home directory
+  acl:
+    path: "{{ app_user_home }}/.pm2"
+    etype: "{{ item.etype }}"
+    permissions: "{{ item.permissions }}"
+    default: yes
+    recursive: yes
+    state: present
+  with_items:
+    - { etype: group, permissions: --- }
+    - { etype: other, permissions: --- }
+  become: yes
+
+# This file contains secrets - keep it locked down to 0600!
+- name: create pm2 config
+  template:
+    src: pm2.json.j2
+    dest: "{{ pm2_procs_file }}"
+    owner: "{{ app_user }}"
+    group: "{{ app_user }}"
+    mode: 0600
+  become: yes
+  notify: restart pm2
+
+- name: create pm2 init script
+  command: "{{ pm2_bin }} startup -u {{ app_user }} --hp {{ app_user_home }}"
+  become: yes
+
+- name: start pm2
+  shell: "{{ pm2_bin }} start {{ pm2_procs_file }}"
+  args:
+    chdir: "{{ app_user_home }}"
+    executable: /bin/bash
+  environment:
+    PM2_HOME: "{{ app_user_home }}/.pm2"
+  become: yes
+  become_user: "{{ app_user }}"

@@ -1,0 +1,20 @@
+---
+
+# AVAILABLE TAGS
+# ==============
+# provision: configure droplet and install necessary packages
+# upgrade: upgrade all packages (apt, npm)
+#   apt-upgrade: perform an `apt-get dist-upgrade`
+#   npm-upgrade: perform an `npm update` based on package.json
+# deploy: upload latest source from GitHub, enable app
+# ==============
+# Each role is also tagged with its name, to allow more granular operations.
+
+# Provision the droplet and deploy.
+- hosts: tweetdex
+  remote_user: deploy
+  roles:
+    - { role: common, tags: ['common'] }
+    - { role: node, tags: ['node'] }
+    - { role: memcached, tags: ['memcached'] }
+    - { role: app, tags: ['app'] }

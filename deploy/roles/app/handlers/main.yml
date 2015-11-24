@@ -1,0 +1,11 @@
+---
+
+- name: restart pm2
+  shell: "{{ pm2_bin }} restart {{ pm2_procs_file }}"
+  args:
+    chdir: "{{ app_user_home }}"
+    executable: /bin/bash
+  environment:
+    PM2_HOME: "{{ app_user_home }}/.pm2"
+  become: yes
+  become_user: "{{ app_user }}"

@@ -1,0 +1,4 @@
+---
+
+- include: spinup.yml
+  tags: spinup

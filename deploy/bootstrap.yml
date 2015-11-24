@@ -1,0 +1,68 @@
+---
+
+# AVAILABLE TAGS
+# ==============
+# spinup: create a new DigitalOcean droplet
+# bootstrap: set up admin user and disable root (NOT IDEMPOTENT)
+# ==============
+# Each role is also tagged with its name, to allow more granular operations.
+
+# Spin up a shiny new DigitalOcean droplet for our robot to live in.
+- name: spin up droplet
+  hosts: localhost
+  connection: local
+  gather_facts: no
+  roles:
+    - { role: droplet, tags: ['droplet'] }
+
+# Bootstraps droplet with admin user and disables root login.
+# Naturally, not exactly idempotent. ¯\(°_o)/¯
+- name: bootstrap droplet
+  hosts: tweetdex
+  remote_user: root
+  tags: bootstrap
+
+  vars:
+    deploy_user_pub_key: "{{ lookup('env', 'TWEETDEX_DEPLOY_USER_PUB_KEY') }}"
+
+  tasks:
+    - name: install sudo
+      apt:
+        name: sudo
+        state: present
+
+    - name: create deploy user
+      user:
+        name: deploy
+        groups: sudo
+        append: yes
+        shell: /bin/bash
+        state: present
+
+    - name: grant ssh access to deploy user
+      authorized_key:
+        user: deploy
+        key: "{{ lookup('file', deploy_user_pub_key) }}"
+        state: present
+
+    - name: grant passwordless sudo
+      lineinfile:
+        dest: /etc/sudoers
+        regexp: "%sudo"
+        line: "%sudo ALL=(ALL:ALL) NOPASSWD:ALL"
+        validate: "visudo -cf %s"
+        state: present
+
+    - name: disable root login
+      lineinfile:
+        dest: /etc/ssh/sshd_config
+        regexp: "^#?PermitRootLogin"
+        line: "PermitRootLogin no"
+        state: present
+      notify: restart sshd
+
+  handlers:
+    - name: restart sshd
+      service:
+        name: sshd
+        state: restarted

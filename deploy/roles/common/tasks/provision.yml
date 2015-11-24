@@ -1,0 +1,71 @@
+---
+
+- name: set hostname
+  hostname:
+    name: "{{ hostname }}"
+
+- name: configure hosts
+  template:
+    src: hosts.j2
+    dest: /etc/hosts
+  notify: restart networking
+
+- name: install essential packages
+  apt:
+    name: "{{ item }}"
+    update_cache: yes
+    cache_valid_time: 3600
+    state: present
+  with_items:
+    - build-essential
+    - fail2ban
+    - ntp
+    - ufw
+
+- name: allow ntp and ssh traffic
+  ufw:
+    rule: allow
+    port: "{{ item.port }}"
+    proto: "{{ item.proto }}"
+  with_items:
+    - { port: ntp, proto: udp }
+    - { port: ssh, proto: tcp }
+
+- name: deny all other traffic
+  ufw:
+    policy: deny
+    state: enabled
+
+- name: disable ssh password authentication
+  lineinfile:
+    dest: /etc/ssh/sshd_config
+    regexp: "^#?PasswordAuthentication"
+    line: "PasswordAuthentication no"
+    state: present
+  notify: restart sshd
+
+- name: create admin user
+  user:
+    name: "{{ admin_user }}"
+    groups: sudo
+    append: yes
+    shell: /bin/bash
+    state: present
+
+- name: grant ssh access to admin user
+  authorized_key:
+    user: "{{ admin_user }}"
+    key: "{{ lookup('file', admin_user_pub_key) }}"
+    state: present
+
+- name: make sure services are shiny
+  service:
+    name: "{{ item }}"
+    enabled: yes
+    state: started
+  with_items:
+    - fail2ban
+    - networking
+    - ntp
+    - sshd
+    - ufw

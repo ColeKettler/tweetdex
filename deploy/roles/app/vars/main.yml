@@ -1,0 +1,10 @@
+---
+
+app_directory: /var/www/tweetdex
+app_log_directory: /var/log/tweetdex
+app_user: node
+app_user_home: /home/{{ app_user }}
+github_repo: "ssh://git@github.com/ColeKettler/tweetdex.git"
+memcached_uri: "127.0.0.1:11211"
+pm2_bin: /usr/bin/pm2
+pm2_procs_file: "{{ app_user_home }}/tweetdex_procs.json"

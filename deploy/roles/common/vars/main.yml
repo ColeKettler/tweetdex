@@ -1,0 +1,4 @@
+---
+
+admin_user: "{{ lookup('env', 'TWEETDEX_ADMIN_USER') }}"
+admin_user_pub_key: "{{ lookup('env', 'TWEETDEX_ADMIN_USER_PUB_KEY') }}"

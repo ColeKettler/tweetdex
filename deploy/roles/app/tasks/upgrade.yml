@@ -1,0 +1,8 @@
+---
+
+- name: upgrade npm dependencies
+  npm:
+    path: "{{ app_directory }}"
+    production: yes
+    state: latest
+  tags: npm-upgrade

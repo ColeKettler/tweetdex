@@ -1,0 +1,15 @@
+{
+  "apps": [{
+    "name": "tweetdex",
+    "script": "bot.js",
+    "cwd": "{{ app_directory }}/src",
+    "env": {
+      "NODE_ENV": "production",
+      "TWEETDEX_MEMCACHED_URI": "{{ memcached_uri }}",
+      "TWEETDEX_TWITTER_API_KEY": "{{ twitter_api_key }}",
+      "TWEETDEX_TWITTER_API_SECRET": "{{ twitter_api_secret }}",
+      "TWEETDEX_TWITTER_OAUTH_TOKEN": "{{ twitter_oauth_token }}",
+      "TWEETDEX_TWITTER_OAUTH_SECRET": "{{ twitter_oauth_secret }}"
+    }
+  }]
+}

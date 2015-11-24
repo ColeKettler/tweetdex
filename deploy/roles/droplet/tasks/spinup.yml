@@ -1,0 +1,36 @@
+---
+
+- name: create ssh key
+  digital_ocean:
+    command: ssh
+    name: "{{ droplet_name }}"
+    ssh_pub_key: "{{ root_pub_key }}"
+  register: do_ssh_key
+
+- name: spin up droplet
+  digital_ocean:
+    command: droplet
+    name: "{{ droplet_name }}"
+    size_id: "{{ droplet_size }}"
+    region_id: "{{ droplet_region }}"
+    image_id: "{{ droplet_image }}"
+    ssh_key_ids:
+      - "{{ do_ssh_key.ssh_key.id }}"
+    unique_name: yes
+    wait: yes
+    state: active
+  register: do_droplet
+
+- name: add new droplet to hosts
+  add_host:
+    name: "{{ do_droplet.droplet.ip_address }}"
+    groups: "{{ droplet_name }}"
+  when: do_droplet|changed
+
+- name: wait for ssh to go up
+  local_action:
+    wait_for
+      host={{ do_droplet.droplet.ip_address }}
+      port=22
+      search_regex=OpenSSH
+      state=started

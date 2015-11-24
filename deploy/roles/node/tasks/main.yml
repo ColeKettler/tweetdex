@@ -1,0 +1,5 @@
+---
+
+- include: provision.yml
+  become: yes
+  tags: provision
