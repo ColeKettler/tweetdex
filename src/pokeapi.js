@@ -1,3 +1,6 @@
+// Data provided by Pokéapi (http://pokeapi.co/),
+// created by Paul Hallett (https://github.com/phalt) and other contributors.
+
 'use strict';
 
 var _ = require('lodash');
