@@ -18,7 +18,7 @@ function reply(tweetId, msg, user) {
   var statuses = splitTweet(msg, user);
   var replyToId = tweetId;
 
-  Promise.each(statuses, function(status) {
+  return Promise.each(statuses, function(status) {
     var posting = utils.retry(postReply.bind(null, replyToId, status), 2);
     return posting
       .then(function(tweet) {
