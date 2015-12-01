@@ -1,6 +1,7 @@
 'use strict';
 
 var _ = require('lodash');
+var logger = require('./logger'); // jshint ignore:line
 var pokeapi = require('./pokeapi');
 var twitter = require('./twitter');
 var PokemonNotFoundError = require('./errors').PokemonNotFoundError;

@@ -8,11 +8,19 @@ var logger = new winston.Logger();
 
 if (process.env.NODE_ENV === 'production') {
   logger.add(winston.transports.File, {
+    name: 'info-file',
     level: 'info',
-    filename: logDir + 'tweetdex.log',
+    filename: logDir + 'tweetdex_info.log',
   });
   logger.add(winston.transports.File, {
-    filename: logDir + 'exceptions.log',
+    name: 'warn-file',
+    level: 'warn',
+    filename: logDir + 'tweetdex_warn.log',
+  });
+  logger.add(winston.transports.File, {
+    name: 'error-file',
+    level: 'error',
+    filename: logDir + 'tweetdex_errors.log',
     handleExceptions: true,
     humanReadableUnhandledException: true,
   });

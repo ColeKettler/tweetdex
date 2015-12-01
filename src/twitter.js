@@ -26,7 +26,7 @@ function reply(tweetId, msg, user) {
       })
       .error(function(err) {
         var errInfo = _.pick(err, ['code', 'statusCode', 'message']);
-        logger.error('Tweet failed to send', { error: errInfo });
+        logger.warn('Tweet failed to send', { error: errInfo });
       });
   });
 }
