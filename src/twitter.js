@@ -101,7 +101,27 @@ function getMaxCharacters(msg, user, isContinuation) {
   return n;
 }
 
+// Convert tweet body to lowercase text.
+function normalizeTweetText(txt) {
+  return _(txt.split(' '))
+    .reject(function(word) {
+      // Remove @mentions from body of tweet.
+      return _.startsWith(word, '@');
+    })
+    .map(function(word) {
+      // Strip #hashtags.
+      return _.trimLeft(word, '#');
+    })
+    .map(function(word) {
+      return word.toLowerCase();
+    })
+    .join(' ');
+}
+
 module.exports = {
   client: client,
   reply: reply,
+  utils: {
+    normalizeTweetText: normalizeTweetText,
+  },
 };

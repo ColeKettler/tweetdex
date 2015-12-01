@@ -2,16 +2,7 @@
 
 var _ = require('lodash');
 
-// Due to some issue with Pokeapi, the "é" in "Pokémon" gets dropped.
-// This is a quick hack to fix it until the issue is resolved.
-function fixPokemonSpelling(text) {
-  var rx = /pokmon/gi;
-  var fixedText = text.replace(rx, function(match) {
-    return match.slice(0, 3) + 'é' + match.slice(3);
-  });
-  return fixedText;
-}
-
+// Get random integer between min and max (exclusive).
 function getRandomInt(min, max) {
   return Math.floor(Math.random() * (max - min)) + min;
 }
@@ -28,6 +19,17 @@ function retry(func, maxRetries) {
   });
 }
 
+// Split text into words (ignoring hyphens), and return first word that occurs
+// in the list.
+function findFirstWordInList(list, txt) {
+  var words = _.words(txt, /[-\w]+/g);
+  var result = _.find(words, function(word) {
+    return _.includes(list, word);
+  });
+  return result;
+}
+
+// Truncate a string to less than max chars long, split at last word boundary.
 function truncateAtWord(str, max) {
   var trunc = str.slice(0, max);
   if (trunc.length < str.length) {
@@ -37,7 +39,7 @@ function truncateAtWord(str, max) {
 }
 
 module.exports = {
-  fixPokemonSpelling: fixPokemonSpelling,
+  findFirstWordInList: findFirstWordInList,
   getRandomInt: getRandomInt,
   retry: retry,
   truncateAtWord: truncateAtWord,
